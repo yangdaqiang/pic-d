@@ -8,7 +8,7 @@ library(rvest)
 library(downloader)
 library(tidyverse)
 
-main_url <- "https://www.lanvshen.com/t/1939/" 
+main_url <- "https://www.tujigu.com/t/1876/" 
 
 # counting file quantity
 count_img <- read_html(main_url) %>% html_nodes("div.hezi") %>% html_nodes("ul") %>%
@@ -36,11 +36,11 @@ url_col <- str_c(unlist(url_col))
 dirname <- read_html(main_url) %>% html_nodes("div.renwu") %>% 
   html_nodes("div.left") %>% html_nodes("img") %>% html_attr("alt") 
 dirname <- str_replace_all(dirname, ",", "、")
-dir.create(paste0("D:/R-projects/pic-d/img/", dirname))
+dir.create(paste0("D:/R-projects/img/", dirname))
 
 # loop downloading function
 for(i in 1:sum(count_img)) {
-  download(url_col[i],sprintf("D:/R-projects/pic-d/img/%s/%04d.jpg", dirname,i), 
+  download(url_col[i],sprintf("D:/R-projects/img/%s/%04d.jpg", dirname,i), 
            quiet = TRUE, mode = "wb")
 }
 

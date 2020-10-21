@@ -1,4 +1,5 @@
-# pic-d could download pictures from a specific website https://www.lanvshen.com/
+# pic-d could download pictures from a specific website https://www.tujigu.com/
+
 it is a excecise project of scraper and R programming.
 the useage steps of it are following:
 1 get into this web;
