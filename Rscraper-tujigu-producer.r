@@ -65,6 +65,8 @@ title <- str_replace_all(title, "写真集", "")
 
 title <- str_replace_all(title, "/", "_")
 
+title <- str_replace_all(title, "・", "_")
+
 title_all <- vector("list", length(title))
 for (m in seq_along(title)) {
   title_all[[m]] <- sprintf("%s_%03d.jpg", rep(title[[m]], count_img[m]), 1:count_img[m])
