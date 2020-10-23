@@ -66,6 +66,7 @@ title <- str_replace_all(title, "写真集", "")
 title <- str_replace_all(title, "/", "_")
 
 title <- str_replace_all(title, "・", "_")
+
 title <- str_replace_all(title, "､", "_")
 
 
