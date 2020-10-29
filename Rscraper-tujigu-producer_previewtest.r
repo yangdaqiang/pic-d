@@ -8,7 +8,7 @@ library(rvest)
 library(downloader)
 library(tidyverse)
 
-baseurl <- "https://www.tujigu.com/x/57/"
+baseurl <- "https://www.tujigu.com/x/48/"
 
 # find how many sets of pic
 total_sets <- read_html(baseurl) %>% html_nodes(".shoulushuliang span") %>% 

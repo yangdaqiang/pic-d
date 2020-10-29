@@ -8,7 +8,7 @@ library(rvest)
 library(downloader)
 library(tidyverse)
 
-baseurl <- "https://www.tujigu.com/x/48/"
+baseurl <- "https://www.tujigu.com/x/95/"
 
 # find how many sets of pic
 total_sets <- read_html(baseurl) %>% html_nodes(".shoulushuliang span") %>% 
@@ -19,27 +19,32 @@ add_page <- c("", str_c("index_", 1:(total_sets %/% 40), ".html"))
 main_url <- str_c(baseurl, add_page) %>% as.list()
 
 
-# counting file quantity
+# counting file quantity, find file group address, prepare all file titles
 
 count_img <- vector("list", length(main_url))
+picpath <- vector("list", length(main_url))
+title <- vector("list", length(main_url))
+
 for (i in 1:length(main_url)){
   count_img[[i]] <- read_html(main_url[[i]]) %>% html_nodes(".shuliang") %>% 
     html_text() 
+  
+  picpath[[i]] <- read_html(main_url[[i]]) %>% html_nodes(".hezi img") %>% 
+    html_attr("src")
+  
+  title[[i]] <- read_html(main_url[[i]]) %>% html_nodes(".biaoti a") %>%
+    html_text()
+  
 }
+
+
 count_img <- str_c(unlist(count_img))
 count_img <- as.numeric(str_replace_all(count_img, "P", ""))
 
-# find file group address
-picpath <- vector("list", length(main_url))
-for (j in 1:length(main_url)){
-  picpath[[j]] <- read_html(main_url[[j]]) %>% html_nodes(".hezi img") %>% 
-    html_attr("src")
-}
-
 picpath <- str_c(unlist(picpath))
-
-# creating file address list 
 picpath <- str_remove_all(picpath, "0.jpg")
+
+title <- str_c(unlist(title))
 
 # vectorizing each file address by "list" it
 url_col <- vector("list", length(picpath))
@@ -53,29 +58,20 @@ url_col <- str_c(unlist(url_col))
 # creating download object dir use page name and regular it 
 dirname <- read_html(main_url[[1]]) %>% html_nodes("h1") %>% html_text()
 
-#dirname <- str_replace_all(dirname, ",", "、")
+# dirname <- str_replace_all(dirname, ",", "、")
 dir.create(paste0("D:/R-projects/img/", dirname))
 
-# collecting alumb title
-title <- vector("list", length(main_url))
-for (k in 1:length(main_url)){
-  title[[k]] <- read_html(main_url[[k]]) %>% html_nodes(".biaoti a") %>%
-    html_text()
-}
-title <- str_c(unlist(title))
+# title 
+title0 <- title
 
-title <- str_replace_all(title, "写真集", "")
+# file name's trial and error
 
-title <- str_replace_all(title, "/", "_")
-
-title <- str_replace_all(title, "・", "_")
-
-title <- str_replace_all(title, "､", "_")
+title0 <- str_replace_all(title0, "[/・､〜｣]", "_")
 
 
 title_all <- vector("list", length(title))
 for (m in seq_along(title)) {
-  title_all[[m]] <- sprintf("%s_%03d.jpg", rep(title[[m]], count_img[m]), 
+  title_all[[m]] <- sprintf("%s_%03d.jpg", rep(title0[[m]], count_img[m]), 
                             1:count_img[m])
 }
 
