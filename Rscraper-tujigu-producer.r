@@ -8,7 +8,7 @@ library(rvest)
 library(downloader)
 library(tidyverse)
 
-baseurl <- "https://www.tujigu.com/x/95/"
+baseurl <- "https://www.tujigu.com/x/33/"
 
 # find how many sets of pic
 total_sets <- read_html(baseurl) %>% html_nodes(".shoulushuliang span") %>% 
@@ -61,12 +61,12 @@ dirname <- read_html(main_url[[1]]) %>% html_nodes("h1") %>% html_text()
 # dirname <- str_replace_all(dirname, ",", "、")
 dir.create(paste0("D:/R-projects/img/", dirname))
 
-# title 
+# title copy 
 title0 <- title
 
 # file name's trial and error
 
-title0 <- str_replace_all(title0, "[/・､〜｣]", "_")
+title0 <- str_replace_all(title0, "[/・•､〜♡゙゚｣゚｣ﾏ‼゙]", "_")
 
 
 title_all <- vector("list", length(title))
@@ -82,6 +82,7 @@ title_all <- str_c(unlist(title_all))
 for(l in 1:sum(count_img)) {
   download(url_col[l], sprintf("D:/R-projects/img/%s/%s", dirname, 
                                title_all[l]), quiet = TRUE, mode = "wb")
+  #Sys.sleep(0.5)
 }
 
 
