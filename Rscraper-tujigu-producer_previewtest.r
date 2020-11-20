@@ -3,12 +3,14 @@
 #install.packages("downloader")
 #install.packages("tidyverse")
 
+Sys.setenv(LANGUAGE = "en")
+
 library(xml2)
 library(rvest)
-library(downloader)
+#library(downloader)
 library(tidyverse)
 
-baseurl <- "https://www.tujigu.com/x/48/"
+baseurl <- "https://www.tujigu.com/x/50/"
 
 # find how many sets of pic
 total_sets <- read_html(baseurl) %>% html_nodes(".shoulushuliang span") %>% 
@@ -47,11 +49,11 @@ title <- str_c(unlist(title))
 
 title0 <- title
 
-title0 <- str_replace_all(title0, c("腿模" = "", "写真集" = "","Beautyleg" = "",  
-                                    "美腿" = "", "PhotoBook" = "", "[\\[\\]]" = ""))
-
-title0 <- str_replace_all(title0, c("写真集" = "", "PB" = "","Photobook" = "",  
-                                    "Photo Book" = "", "PhotoBook" = "", "[\\[\\]]" = ""))
+# title0 <- str_replace_all(title0, c("腿模" = "", "写真集" = "","Beautyleg" = "",  
+#                                     "美腿" = "", "PhotoBook" = "", "[\\[\\]]" = ""))
+# 
+# title0 <- str_replace_all(title0, c("写真集" = "", "PB" = "","Photobook" = "",  
+#                                     "Photo Book" = "", "PhotoBook" = "", "[\\[\\]]" = ""))
 
 
 # title0 <- str_replace_all(title0, "P?k", "")
@@ -64,7 +66,9 @@ title0 <- str_replace_all(title0, c("写真集" = "", "PB" = "","Photobook" = ""
 # 
 # title0 <- str_replace_all(title0, "[\\[\\]]", "")
 
-title0 <- str_replace_all(title0, "[/・､〜｣]", "_")
+title0 <- str_replace_all(title0, "[/]", "_")
+
+title0 <- str_replace_all(title0, "[/・•､゚〜｣ﾏ‼゙♥]", "_")
 
 # creating download object dir use page name and regular it 
 dirname <- read_html(main_url[[1]]) %>% html_nodes("h1") %>% html_text()
@@ -75,8 +79,9 @@ dir.create(paste0("D:/R-projects/img/", dirname))
 
 # loop downloading function
 for(l in 1:sum(total_sets)) {
-  download(picpath[l], sprintf("D:/R-projects/img/%s/%s.jpg", dirname, 
+  download.file(picpath[l], sprintf("D:/R-projects/img/%s/%s.jpg", dirname, 
                                title0[l]), quiet = TRUE, mode = "wb")
+  Sys.sleep(5)
 }
 
 # title <- str_replace_all(title, "/", "_")
