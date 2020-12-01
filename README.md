@@ -1,5 +1,10 @@
 # pic-d could download pictures from a specific website https://www.tujigu.com/
 
+2020/12/1
+1 combined ~singlepage and ~multipage together by add conditional script, so rscraper-tujigu.r is the final code for specific modle pic collection. BTW, I renewed some code base on ~producer.r's.
+2 strange japanese character always appeared unwillingly, I thought it can be sloved by regax
+
+
 it is a excecise project of scraper and R programming.
 the useage steps of it are following:
 1 get into this web;
