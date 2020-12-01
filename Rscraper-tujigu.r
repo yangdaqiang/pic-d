@@ -9,16 +9,19 @@ library(rvest)
 library(downloader)
 library(tidyverse)
 
-baseurl <- "https://www.tujigu.com/x/4/"
+baseurl <- "https://www.tujigu.com/t/2870/"
 
 # find how many sets of pic
 total_sets <- read_html(baseurl) %>% html_nodes(".shoulushuliang span") %>% 
   html_text() %>% as.numeric()
 
-add_page <- c("", str_c("index_", 1:(total_sets %/% 40), ".html"))
-
-main_url <- str_c(baseurl, add_page) %>% as.list()
-
+# add condition for different amount of alumb sets
+if(total_sets > 40) {
+  add_page <- c("", str_c("index_", 1:(total_sets %/% 40), ".html"))
+  main_url <- str_c(baseurl, add_page) %>% as.list()
+  } else {
+  main_url <- baseurl
+  } 
 
 # counting file quantity, find file group address, prepare all file titles
 
@@ -35,12 +38,10 @@ for (i in 1:length(main_url)){
   
   title[[i]] <- read_html(main_url[[i]]) %>% html_nodes(".biaoti a") %>%
     html_text()
-  
-}
-
+  }
 
 count_img <- str_c(unlist(count_img))
-count_img <- str_replace_all(count_img, "P", "") %>% as.numeric()
+count_img <- as.numeric(str_replace_all(count_img, "P", ""))
 
 picpath <- str_c(unlist(picpath))
 picpath <- str_remove_all(picpath, "0.jpg")
@@ -49,7 +50,7 @@ title <- str_c(unlist(title))
 
 # vectorizing each file address by "list" it
 url_col <- vector("list", length(picpath))
-for (x in seq_along(picpath)) {
+  for (x in seq_along(picpath)) {
   url_col[[x]] <- sprintf("%s%d.jpg", rep(picpath[[x]], count_img[x]), 
                           1:count_img[x])
 }
@@ -57,34 +58,14 @@ for (x in seq_along(picpath)) {
 url_col <- str_c(unlist(url_col))
 
 # creating download object dir use page name and regular it 
-dirname <- read_html(main_url[[1]]) %>% html_nodes("h1") %>% html_text()
-dirname <- str_replace_all(dirname, "[|]", "")
-
-# dirname <- str_replace_all(dirname, ",", "、")
+dirname <- read_html(main_url[[1]]) %>% html_nodes("div.renwu") %>% 
+  html_nodes("div.left") %>% html_nodes("img") %>% html_attr("alt") 
+dirname <- str_replace_all(dirname, ",", "、")
 dir.create(paste0("D:/R-projects/img/", dirname))
 
-# title copy 
-title0 <- title
-
-# file name's trial and error
-
-title0 <- str_replace_all(title0, "[/・•､〜♡゙゚｣゚｣ﾏ‼゙･♥･]", "_")
-
-
-title_all <- vector("list", length(title))
-for (m in seq_along(title)) {
-  title_all[[m]] <- sprintf("%s_%03d.jpg", rep(title0[[m]], count_img[m]), 
-                            1:count_img[m])
-}
-
-title_all <- str_c(unlist(title_all))
-
-
 # loop downloading function
-for(l in 5478:sum(count_img)) {
-  download.file(url_col[l], sprintf("D:/R-projects/img/%s/%s", dirname, 
-                               title_all[l]), quiet = TRUE, mode = "wb")
-  #Sys.sleep(0.5)
+for(i in 1:sum(count_img)) {
+  download(url_col[i],sprintf("D:/R-projects/img/%s/%05d.jpg", dirname,i), 
+           quiet = TRUE, mode = "wb")
 }
-
 
